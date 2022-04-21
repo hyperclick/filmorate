@@ -16,13 +16,22 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
 
-    Map<Integer, User> users = new HashMap<>();
-    private int lastId = 1;
+    private Map<Integer, User> users = new HashMap<>();
 
+    public Map<Integer, User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Map<Integer, User> users) {
+        this.users = users;
+    }
+
+    private int lastId = 1;
 
     @GetMapping
     private Collection<User> getAllUsers() {
         log.debug(users.toString().toUpperCase());
+        log.debug("users {} has been added", users.toString().toUpperCase());
         return users.values();
     }
 
@@ -31,7 +40,7 @@ public class UserController {
         validate(user);
         user.setUserId(lastId++);
         users.put(user.getUserId(), user);
-        log.debug("user " + user.getName().toUpperCase() + " has been added");
+        log.debug("user {} has been added", users.toString().toUpperCase());
         return user;
     }
 
@@ -39,7 +48,7 @@ public class UserController {
     private User updateUser(@RequestBody User user) {
         validate(user);
         users.put(user.getUserId(), user);
-        log.debug("user" + user.getName() + " has been updated");
+        log.debug("users {} has been updated", users.toString().toUpperCase());
         return user;
     }
 

@@ -14,13 +14,21 @@ import java.util.*;
 @RequestMapping("/films")
 public class FilmController {
 
-    Map<Integer, Film> films = new HashMap<>();
+    private Map<Integer, Film> films = new HashMap<>();
+
+    public Map<Integer, Film> getFilms() {
+        return films;
+    }
+
+    public void setFilms(Map<Integer, Film> films) {
+        this.films = films;
+    }
 
     private int lastId = 1;
 
     @GetMapping
     private Collection<Film> getAllFilms() {
-        log.debug(films.toString().toUpperCase());
+        log.debug("films {} has been added", films.toString().toUpperCase());
         return films.values();
     }
 
@@ -29,7 +37,7 @@ public class FilmController {
         validate(film);
         film.setFilmId(lastId++);
         films.put(film.getFilmId(), film);
-        log.debug("film " + film.getName().toUpperCase() + " has been added");
+        log.debug("film {} has been added", film.getName().toUpperCase());
         return film;
     }
 
@@ -37,11 +45,14 @@ public class FilmController {
     private Film updateFilm(@RequestBody Film film) {
         validate(film);
         films.put(film.getFilmId(), film);
-        log.debug("film" + film.getName().toUpperCase() + " has been updated");
+        log.debug("film {} has been updated", film.getName().toUpperCase());
         return film;
     }
 
     private void validate(Film film) {
+        if (film.getName().equals("")) {
+            throw new ValidationException("The film name should be added");
+        }
         if (film.getDescription().length() > 200) {
             throw new ValidationException("The film description should be be less then 200 symbols");
         }

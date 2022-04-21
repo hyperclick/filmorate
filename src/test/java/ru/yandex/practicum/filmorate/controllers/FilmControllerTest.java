@@ -105,7 +105,7 @@ class FilmControllerTest {
     }
 
     @Test
-    public void validationTest2() throws Exception {
+    public void validationTest() throws Exception {
         var film = getValidFilm();
         film.setName("");
         testStatus(film, status().is4xxClientError());
