@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Film {
+    private int like;
     private int filmId;
     @NotNull
     @NotBlank

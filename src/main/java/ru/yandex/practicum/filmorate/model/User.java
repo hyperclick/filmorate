@@ -4,9 +4,12 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Collection;
 
 @Data
 public class User {
+
+    private Collection <User> friends;
     private int userId;
     @Email
     private String email;
