@@ -3,13 +3,15 @@ package ru.yandex.practicum.filmorate.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
 
@@ -19,16 +21,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@WebMvcTest(FilmController.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@SpringBootTest
+@AutoConfigureMockMvc
 class FilmControllerTest {
+
+    @Autowired
+    private FilmStorage filmStorage;
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
 
     private Film getValidFilm() {
         var film = new Film();
@@ -38,6 +44,7 @@ class FilmControllerTest {
         film.setDuration(10);
         return film;
     }
+
 
     @Test
     public void shouldReturnEmptyArray() throws Exception {
@@ -123,6 +130,7 @@ class FilmControllerTest {
         testStatus(film, status().is4xxClientError());
 
     }
+
     private void testStatus(Film film, ResultMatcher resultMatcher) throws Exception {
         this
                 .mockMvc

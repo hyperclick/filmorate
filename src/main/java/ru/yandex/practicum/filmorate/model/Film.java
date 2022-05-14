@@ -6,13 +6,17 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Film {
-    private int like;
+
     private int filmId;
+
+    private final Set<Integer> likes = new HashSet<>();
     @NotNull
     @NotBlank
     private String name;
@@ -20,4 +24,16 @@ public class Film {
     private LocalDate releaseDate;
     @Min(1)
     private int duration;
+
+    public int getLikesCount() {
+        return likes.size();
+    }
+
+    public void addLike(User user) {
+        likes.add(user.getUserId());
+    }
+
+    public void deleteLike(int userId) {
+        likes.remove(userId);
+    }
 }

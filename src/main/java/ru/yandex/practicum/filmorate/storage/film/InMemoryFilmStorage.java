@@ -1,10 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import lombok.extern.slf4j.Slf4j;
@@ -14,15 +10,19 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Component
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
-
     private Map<Integer, Film> films = new HashMap<>();
 
-    public Map<Integer, Film> getFilms() {
-        return films;
+    public InMemoryFilmStorage() {
+    }
+
+
+    public Collection<Film> getAllFilms() {
+        return films.values();
     }
 
     public void setFilms(Map<Integer, Film> films) {
@@ -39,28 +39,29 @@ public class InMemoryFilmStorage implements FilmStorage {
         this.lastId = lastId;
     }
 
-    @GetMapping
-    private Collection<Film> getAllFilms() {
-        log.debug("films {} has been added", films.toString().toUpperCase());
-        return films.values();
-    }
 
-    @PostMapping
-    private Film addFilm(@Valid Film film) {
+    public void addFilm(@Valid Film film) {
         validate(film);
         film.setFilmId(lastId++);
         films.put(film.getFilmId(), film);
         log.debug("film {} has been added", film.getName().toUpperCase());
-        return film;
     }
 
-    @PutMapping
-    private Film updateFilm( Film film) {
+
+    public void updateFilm(Film film) {
         validate(film);
         films.put(film.getFilmId(), film);
         log.debug("film {} has been updated", film.getName().toUpperCase());
-        return film;
     }
+
+    @Override
+    public Film getById(int filmId) {
+        if (!films.containsKey(filmId)) {
+            throw new NoSuchElementException();
+        }
+        return films.get(filmId);
+    }
+
     private void validate(Film film) {
         if (film.getName().equals("")) {
             throw new ValidationException("The film name should be added");

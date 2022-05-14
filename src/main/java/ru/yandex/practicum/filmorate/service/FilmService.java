@@ -1,48 +1,39 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
 public class FilmService {
 
-    private Collection<Film> theBestFilms;
-    private final InMemoryFilmStorage inMemoryFilmStorage;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
-    public FilmService(InMemoryFilmStorage inMemoryFilmStorage) {
-        this.inMemoryFilmStorage = inMemoryFilmStorage;
+    @Autowired
+    public FilmService(FilmStorage inMemoryFilmStorage, UserStorage userStorage) {
+        this.filmStorage = inMemoryFilmStorage;
+        this.userStorage = userStorage;
     }
 
 
-    private Collection<Film> getTenTheBestFilms() {
-        ArrayList<Integer> likes = new ArrayList<>();
-        for (Film f : inMemoryFilmStorage.getFilms().values()) {
-            likes.add(f.getLike());
-        }
-        Collections.sort(likes);
-        for (int i = 0; i < 9; i++) {
-            for (Film f : inMemoryFilmStorage.getFilms().values()) {
-                if (likes.get(i) == f.getLike()) {
-                    theBestFilms.add(f);
-                }
-            }
-        }
-        return theBestFilms;
+    public Stream<Film> getMostPopular(int count) {
+        return filmStorage.getAllFilms().stream()
+                .sorted((a, b) -> b.getLikesCount() - a.getLikesCount())
+                .limit(count);
     }
 
-    private void addLike(Film film) {
-        film.setLike(film.getLike() + 1);
+    public void addLike(int filmId, int userId) {
+        userStorage.getById(userId).like(filmStorage.getById(filmId));
     }
 
-    private void deleteLike(Film film) {
-        film.setLike(film.getLike() - 1);
+    public void deleteLike(int filmId, int userId) {
+        userStorage.getById(userId).unlike(filmStorage.getById(filmId));
     }
 }
