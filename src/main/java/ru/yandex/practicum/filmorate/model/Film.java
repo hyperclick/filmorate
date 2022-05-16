@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Film {
 
-    private int filmId;
+    private int id;
 
     private final Set<Integer> likes = new HashSet<>();
     @NotNull
@@ -30,7 +30,7 @@ public class Film {
     }
 
     public void addLike(User user) {
-        likes.add(user.getUserId());
+        likes.add(user.getId());
     }
 
     public void deleteLike(int userId) {

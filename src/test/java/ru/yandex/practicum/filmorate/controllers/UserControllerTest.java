@@ -68,7 +68,7 @@ public class UserControllerTest {
         var stringContent = resultActions.andReturn().getResponse().getContentAsString();
 
         var r = objectMapper.readValue(stringContent, User.class);
-        user.setUserId(r.getUserId());
+        user.setId(r.getId());
         assertEquals(user, r);
 
         this

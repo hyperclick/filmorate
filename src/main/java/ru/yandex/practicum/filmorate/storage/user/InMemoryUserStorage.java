@@ -37,15 +37,15 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void addUser(User user) {
         validate(user);
-        user.setUserId(lastId++);
-        users.put(user.getUserId(), user);
+        user.setId(lastId++);
+        users.put(user.getId(), user);
         log.debug("user {} has been added", users.toString().toUpperCase());
     }
 
     @Override
     public void updateUser(User user) {
         validate(user);
-        users.put(user.getUserId(), user);
+        users.put(user.getId(), user);
         log.debug("users {} has been updated", users.toString().toUpperCase());
     }
 

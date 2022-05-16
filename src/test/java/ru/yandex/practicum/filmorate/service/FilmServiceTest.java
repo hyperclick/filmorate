@@ -29,7 +29,7 @@ class FilmServiceTest {
         for (int i = 0; i < n; i++) {
             var user = new User();
             user.setName("user" + i);
-            user.setUserId(i);
+            user.setId(i);
             list.add(user);
         }
         return list;

@@ -74,7 +74,7 @@ class FilmControllerTest {
         var stringContent = resultActions.andReturn().getResponse().getContentAsString();
 
         var r = objectMapper.readValue(stringContent, Film.class);
-        film.setFilmId(r.getFilmId());
+        film.setId(r.getId());
         assertEquals(film, r);
 
         this

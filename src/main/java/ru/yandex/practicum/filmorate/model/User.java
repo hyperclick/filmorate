@@ -13,7 +13,7 @@ public class User {
 
     private final Set<Integer> friends = new HashSet<>();
 
-    private int userId;
+    private int id;
 
     @Email
     private String email;
@@ -27,6 +27,6 @@ public class User {
     }
 
     public void unlike(Film film) {
-        film.deleteLike(this.userId);
+        film.deleteLike(this.id);
     }
 }

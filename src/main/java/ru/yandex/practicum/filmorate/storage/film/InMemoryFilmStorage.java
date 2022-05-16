@@ -42,15 +42,15 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     public void addFilm(@Valid Film film) {
         validate(film);
-        film.setFilmId(lastId++);
-        films.put(film.getFilmId(), film);
+        film.setId(lastId++);
+        films.put(film.getId(), film);
         log.debug("film {} has been added", film.getName().toUpperCase());
     }
 
 
     public void updateFilm(Film film) {
         validate(film);
-        films.put(film.getFilmId(), film);
+        films.put(film.getId(), film);
         log.debug("film {} has been updated", film.getName().toUpperCase());
     }
 
