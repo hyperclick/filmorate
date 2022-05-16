@@ -2,7 +2,9 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -12,6 +14,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -70,6 +73,15 @@ public class FilmController {
         return film;
     }
 
+    @GetMapping("/{id}")
+    private Film getFilm(@PathVariable("id") Integer id) {
+        try {
+            return filmStorage.getById(id);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping
     private Film updateFilm(@Valid @RequestBody Film film) {
         filmStorage.updateFilm(film);
@@ -83,7 +95,11 @@ public class FilmController {
 
     @DeleteMapping("{id}/like/{userId}")
     private void deleteLike(@PathVariable("id") Integer filmId, @PathVariable("userId") Integer userId) {
-        service.deleteLike(filmId, userId);
+        try {
+            service.deleteLike(filmId, userId);
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("popular")

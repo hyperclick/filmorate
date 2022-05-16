@@ -66,6 +66,9 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (film.getName().equals("")) {
             throw new ValidationException("The film name should be added");
         }
+        if (film.getDescription().equals("")) {
+            throw new ValidationException("The film description should be greater than 0");
+        }
         if (film.getDescription().length() > 200) {
             throw new ValidationException("The film description should be be less then 200 symbols");
         }
