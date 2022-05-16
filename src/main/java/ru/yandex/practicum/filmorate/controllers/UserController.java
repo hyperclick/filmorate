@@ -33,7 +33,7 @@ public class UserController {
 
     @EventListener(ApplicationReadyEvent.class)
     private void onStart() {
-        System.out.println("started");
+        log.info("started");
     }
 
 
@@ -54,7 +54,7 @@ public class UserController {
     @PostMapping
     private User addUser(@Valid @RequestBody User user) {
         userStorage.addUser(user);
-        return user;
+        return userStorage.getById(user.getId());
     }
 
     @PutMapping

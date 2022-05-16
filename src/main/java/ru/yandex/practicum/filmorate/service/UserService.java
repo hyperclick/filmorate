@@ -29,7 +29,7 @@ public class UserService {
             user.getFriends().add(user2.getId());
             user2.getFriends().add(user.getId());
         } else {
-            log.error("User " + user + " is in your friends list already");
+            log.error("User {} is in your friends list already", user);
         }
     }
 
