@@ -6,10 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -28,6 +31,37 @@ public class FilmController {
         this.service = service;
     }
 
+    @Autowired
+    UserStorage userStorage;
+
+    private void addFilms(int count) {
+        for (int i = 0; i < count; i++) {
+            var film = new Film(i, "name" + i, "name" + i, LocalDate.now(), i + 1);
+            for (int j = 1; j < i; j++) {
+                film.addLike(userStorage.getById(j));
+            }
+            filmStorage.addFilm(film);
+        }
+    }
+
+    private void createUsers(int n) {
+        for (int i = 0; i < n; i++) {
+            var user = new User();
+            user.setName("user" + n);
+            user.setEmail(user.getName() + "@email");
+            user.setLogin(user.getName());
+            user.setBirthday(LocalDate.MIN);
+            userStorage.addUser(user);
+        }
+    }
+
+    private Film addNewFilm(int n) {
+        var film = new Film(n, "name" + n, "name" + n, LocalDate.now(), n);
+
+        filmStorage.addFilm(film);
+        return film;
+    }
+
     @GetMapping
     private Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
@@ -36,7 +70,7 @@ public class FilmController {
     @PostMapping
     private Film addFilm(@Valid @RequestBody Film film) {
         filmStorage.addFilm(film);
-        return filmStorage.getById(film.getId());
+        return film;
     }
 
     @GetMapping("/{id}")
@@ -50,8 +84,12 @@ public class FilmController {
 
     @PutMapping
     private Film updateFilm(@Valid @RequestBody Film film) {
-        filmStorage.updateFilm(film);
-        return film;
+        try {
+            filmStorage.updateFilm(film);
+            return film;
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("{id}/like/{userId}")

@@ -31,11 +31,9 @@ public class FilmService {
 
     public void addLike(int filmId, int userId) {
         userStorage.getById(userId).like(filmStorage.getById(filmId));
-        log.info("like has been added");
     }
 
     public void deleteLike(int filmId, int userId) {
         userStorage.getById(userId).unlike(filmStorage.getById(filmId));
-        log.info("like has been deleted");
     }
 }

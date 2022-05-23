@@ -33,7 +33,7 @@ public class UserController {
 
     @EventListener(ApplicationReadyEvent.class)
     private void onStart() {
-        log.info("started");
+        System.out.println("started");
     }
 
 
@@ -54,13 +54,17 @@ public class UserController {
     @PostMapping
     private User addUser(@Valid @RequestBody User user) {
         userStorage.addUser(user);
-        return userStorage.getById(user.getId());
+        return user;
     }
 
     @PutMapping
     private User updateUser(@RequestBody User user) {
-        userStorage.updateUser(user);
-        return user;
+        try {
+            userStorage.updateUser(user);
+            return user;
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("{id}/friends/{friendId}")
@@ -103,11 +107,11 @@ public class UserController {
     }
 
     @GetMapping("{id}/friends/common/{otherId}")
-    private Collection<Integer> commonFriends(@PathVariable("id") Integer userId, @PathVariable("id") Integer otherId) {
+    private Collection<User> commonFriends(@PathVariable("id") Integer userId, @PathVariable("otherId") Integer otherId) {
         try {
             var user1 = userStorage.getById(userId);
             var user2 = userStorage.getById(otherId);
-            return service.getMutualFriends(user1, user2);
+            return service.getMutualFriends(user1, user2).stream().map(userStorage::getById).collect(Collectors.toSet());
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

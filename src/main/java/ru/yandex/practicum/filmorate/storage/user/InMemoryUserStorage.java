@@ -45,6 +45,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void updateUser(User user) {
         validate(user);
+        getById(user.getId());
         users.put(user.getId(), user);
         log.debug("users {} has been updated", users.toString().toUpperCase());
     }
@@ -65,7 +66,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (user.getLogin() == null || user.getLogin().contains(" ")) {
             throw new ValidationException("The user login can't be empty or contains spaces");
         }
-        if (user.getName() == null || user.getName().equals(" ")) {
+        if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
         }
         if (user.getBirthday().isAfter(LocalDate.now())) {

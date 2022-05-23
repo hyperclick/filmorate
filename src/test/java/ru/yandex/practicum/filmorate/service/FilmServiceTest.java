@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.MpaaRate;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
@@ -38,8 +37,7 @@ class FilmServiceTest {
 
     private void addFilms(InMemoryFilmStorage storage, int count, List<User> users) {
         for (int i = 0; i < count; i++) {
-            var film = new Film(i, "film" + i, "s", LocalDate.now(), i + 1, new ArrayList<>(),
-                    MpaaRate.PG);
+            var film = new Film(i, "film" + i, "", LocalDate.now(), i + 1);
             for (int j = 0; j < i; j++) {
                 film.addLike(users.get(j));
             }

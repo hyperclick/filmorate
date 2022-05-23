@@ -49,6 +49,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     public void updateFilm(Film film) {
+        getById(film.getId());
         validate(film);
         films.put(film.getId(), film);
         log.debug("film {} has been updated", film.getName().toUpperCase());
