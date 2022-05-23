@@ -12,6 +12,8 @@ import java.util.Set;
 public class User {
 
     private final Set<Integer> friends = new HashSet<>();
+    private final Set<FriendshipRequest> friendRequest = new HashSet<>();
+
 
     private int id;
 
@@ -29,4 +31,5 @@ public class User {
     public void unlike(Film film) {
         film.deleteLike(this.id);
     }
+
 }
