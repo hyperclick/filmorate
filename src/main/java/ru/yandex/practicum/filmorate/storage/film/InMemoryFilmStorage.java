@@ -41,6 +41,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     public void addFilm(@Valid Film film) {
+//        if (film.getMpa().getId()==5)
+        film.getMpa().setName("todo: remove");
         validate(film);
         film.setId(lastId++);
         films.put(film.getId(), film);
@@ -49,6 +51,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     public void updateFilm(Film film) {
+        film.getMpa().setName("todo: remove");
         getById(film.getId());
         validate(film);
         films.put(film.getId(), film);
@@ -78,6 +81,9 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         if (film.getDuration() < 1) {
             throw new ValidationException("Film duration should be positive ");
+        }
+        if (film.getMpa() == null) {
+            throw new ValidationException("MPA rate is not provided");
         }
     }
 }

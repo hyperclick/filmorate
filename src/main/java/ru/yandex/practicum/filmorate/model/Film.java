@@ -26,6 +26,8 @@ public class Film {
     @Min(1)
     private int duration;
 
+    private Mpa mpa;
+
     public int getLikesCount() {
         return likes.size();
     }
