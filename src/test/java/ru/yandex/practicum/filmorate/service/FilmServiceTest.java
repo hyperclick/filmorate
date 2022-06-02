@@ -1,9 +1,14 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.time.LocalDate;
@@ -13,11 +18,18 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+@AutoConfigureTestDatabase
+@SpringBootTest
 class FilmServiceTest {
+
+    @Autowired
+    @Qualifier("FilmDbStorage")
+    private FilmStorage filmStorage;
     @Test
     public void testGetTop10() {
         var users = createUsers(100);
-        var filmStorage = new InMemoryFilmStorage();
+//        var filmStorage = new InMemoryFilmStorage();
         addFilms(filmStorage, 100, users);
         var service = new FilmService(filmStorage, null);
         var films = service.getMostPopular(10).collect(Collectors.toUnmodifiableList());
@@ -36,14 +48,15 @@ class FilmServiceTest {
         return list;
     }
 
-    private void addFilms(InMemoryFilmStorage storage, int count, List<User> users) {
+    private void addFilms(FilmStorage storage, int count, List<User> users) {
         for (int i = 0; i < count; i++) {
             var film = Film.builder()
                     .id(i)
                     .name("film" + i)
-            .releaseDate(LocalDate.now())
-            .duration(i + 1)
-            .mpa(Mpa.G())
+                    .description("descr" + i)
+                    .releaseDate(LocalDate.now())
+                    .duration(i + 1)
+                    .mpa(Mpa.G())
                     .build();
             for (int j = 0; j < i; j++) {
                 storage.addLike(i, j);

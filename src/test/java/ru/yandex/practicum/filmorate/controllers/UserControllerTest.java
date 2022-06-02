@@ -84,6 +84,8 @@ public class UserControllerTest {
     @Test
     public void testPut() throws Exception {
         User user = getValidUser();
+        userStorage.addUser(user);
+        user.setId(1);
         user.setLogin("ddd");
         this
                 .mockMvc

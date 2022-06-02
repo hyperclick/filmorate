@@ -34,8 +34,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public Collection<Film> getAllFilms() {
-        var films = jdbcTemplate.query("select * from films", this::mapRowToFilm);
-        return films;
+        return jdbcTemplate.query("select * from films", this::mapRowToFilm);
     }
 
 
@@ -46,6 +45,8 @@ public class FilmDbStorage implements FilmStorage {
     public Integer addFilm(@Valid Film film) {
         validate(film);
         String sqlQuery = "insert into films(name, description, duration, release_date, mpa_id) values (?, ?, ?, ?, ?)";
+        System.out.println(film.getReleaseDate());
+        System.out.println(Date.valueOf(film.getReleaseDate()));
         var keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             var preparedStatement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
@@ -80,18 +81,11 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getById(int filmId) {
-        var film = jdbcTemplate.queryForObject("select * from films where id = ?", this::mapRowToFilm, filmId);
-
-
-//        if (!films.containsKey(filmId)) {
-//            throw new NoSuchElementException();
-//        }
-        return film;
+        return jdbcTemplate.queryForObject("select * from films where id = ?", this::mapRowToFilm, filmId);
     }
 
     @Override
     public void addLike(int filmId, int userId) {
-        var like = Like.builder().film_id(filmId).user_id(userId).build();
         jdbcTemplate.update("insert into likes (film_id, user_id) values (?, ?)",
                 filmId, userId);
     }
@@ -108,6 +102,9 @@ public class FilmDbStorage implements FilmStorage {
     private Film mapRowToFilm(ResultSet resultSet, int i) throws SQLException {
         var filmId = resultSet.getInt("id");
         var mpa_id = resultSet.getInt("mpa_id");
+
+        System.out.println(resultSet.getDate("release_date"));
+        System.out.println(resultSet.getDate("release_date").toLocalDate());
         return Film.builder()
                 .id(filmId)
                 .name(resultSet.getString("name"))
@@ -128,9 +125,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     private Mpa getMpaById(int mpa_id) {
-        var mpa = jdbcTemplate.queryForObject("select * from mpa where id = ?",
+        return jdbcTemplate.queryForObject("select * from mpa where id = ?",
                 (resultSet, i) -> new Mpa(resultSet.getInt("id"), resultSet.getString("name")), mpa_id);
-        return mpa;
     }
 
 

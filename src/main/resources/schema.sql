@@ -1,6 +1,6 @@
---drop table if exists likes;
---drop table if exists  films;
---drop table if exists  mpa;
+drop table if exists likes;
+drop table if exists  films;
+drop table if exists  mpa;
 create table  if not  exists mpa
 (
 id int primary key ,
