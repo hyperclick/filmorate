@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.hibernate.cfg.NotYetImplementedException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -14,6 +16,7 @@ import java.util.NoSuchElementException;
 
 @Component
 @Slf4j
+@Qualifier("InMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
     private Map<Integer, Film> films = new HashMap<>();
 
@@ -40,13 +43,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
 
-    public void addFilm(@Valid Film film) {
+    public Integer addFilm(@Valid Film film) {
 //        if (film.getMpa().getId()==5)
         film.getMpa().setName("todo: remove");
         validate(film);
         film.setId(lastId++);
         films.put(film.getId(), film);
         log.debug("film {} has been added", film.getName().toUpperCase());
+        return  film.getId();
     }
 
 
@@ -64,6 +68,17 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new NoSuchElementException();
         }
         return films.get(filmId);
+    }
+
+    @Override
+    public void addLike(int filmId, int userId) {
+        throw new NotYetImplementedException();
+    }
+
+    @Override
+    public void deleteLike(int filmId, int userId) {
+        throw new NotYetImplementedException();
+
     }
 
     private void validate(Film film) {
