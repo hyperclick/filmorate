@@ -1,3 +1,4 @@
+delete from mpa;
 insert into mpa values
  (1, 'G'),
  (2, 'PG'),

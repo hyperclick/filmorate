@@ -1,13 +1,13 @@
-drop table likes;
-drop table films;
-drop table mpa;
-create table mpa
+--drop table if exists likes;
+--drop table if exists  films;
+--drop table if exists  mpa;
+create table  if not  exists mpa
 (
 id int primary key ,
 name char(10)
 );
 
-create table films
+create table  if not  exists films
 (
     id int auto_increment primary key ,
     name varchar(200) not null,
@@ -18,7 +18,7 @@ create table films
     foreign key(mpa_id) references mpa(id)
 );
 
-create table likes
+create table  if not  exists likes
 (
     film_id int not null,
     user_id int not null,
